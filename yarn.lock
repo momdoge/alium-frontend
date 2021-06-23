@@ -14,9 +14,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@alium-official/uikit@https://github.com/Alium-Finance/alium-uikit":
+"@alium-official/uikit@^0.11.117":
   version "0.11.118"
-  resolved "https://github.com/Alium-Finance/alium-uikit#85daef3086db2f31fea28853102aff1d18339b6d"
+  resolved "https://registry.yarnpkg.com/@alium-official/uikit/-/uikit-0.11.118.tgz#a790cde91837be1362b6ef9b1a5ea8febf4a71b2"
+  integrity sha512-2ytPp71ZhCrdEi5InKobGABf6yQZ4YqVZNb0wWni8EqstyzDy4FMaSV2Mip3hw/dQK8I3jFLfvC0KALcq8Bs3g==
   dependencies:
     "@types/lodash" "^4.14.162"
     "@types/styled-system" "^5.1.10"
