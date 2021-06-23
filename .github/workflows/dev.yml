@@ -53,7 +53,7 @@ jobs:
   deploy_combined:
     needs: build_dev
     if: github.ref == 'refs/heads/combined'
-    runs-on: [self-hosted, stage]
+    runs-on: [self-hosted, dev]
     steps:
       - uses: actions/download-artifact@v2
         with:
