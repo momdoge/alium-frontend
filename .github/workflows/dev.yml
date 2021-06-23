@@ -4,15 +4,15 @@ on:
   push:
     branches:
       - develop
-      - merge
+      - combined
   pull_request:
-    branches:      
+    branches:
       - develop
-      - merge
-      
+      - combined
+
 jobs:
   build_dev:
-    if: github.ref == 'refs/heads/develop' ||  github.ref == 'refs/heads/merge'
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/combined'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2.1.1
@@ -33,7 +33,7 @@ jobs:
       - name: Install dependincies
         run: yarn install
       - name: Build project
-        run: yarn build:dev      
+        run: yarn build:dev
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -52,7 +52,7 @@ jobs:
 
   deploy_merge:
     needs: build_dev
-    if: github.ref == 'refs/heads/merge'
+    if: github.ref == 'refs/heads/combined'
     runs-on: [self-hosted, stage]
     steps:
       - uses: actions/download-artifact@v2
