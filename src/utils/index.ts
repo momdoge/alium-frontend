@@ -1,9 +1,13 @@
-import { Contract } from '@ethersproject/contracts'
+import { ChainId, Currency, CurrencyAmount, ETHER, JSBI, Percent, Token } from '@alium-official/sdk'
 import { getAddress } from '@ethersproject/address'
-import { AddressZero } from '@ethersproject/constants'
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, JSBI, Percent, CurrencyAmount } from '@alium-official/sdk'
+import { AddressZero } from '@ethersproject/constants'
+import { Contract } from '@ethersproject/contracts'
+import { JsonRpcSigner, Provider, Web3Provider } from '@ethersproject/providers'
+import { ROUTER_ABI, ROUTER_ADDRESS } from 'config/contracts'
+import { NFT_VESTING, AliumVestingAbi } from 'pages/InvestorsAccount/constants'
+import { TokenAddressMap } from '../state/lists/hooks'
+import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -13,7 +17,11 @@ export function isAddress(value: any): string | false {
     return false
   }
 }
-
+// @ts-ignore
+const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
+  56: '',
+  97: 'testnet.',
+}
 const EXPLORER_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.MAINNET]: '',
   [ChainId.BSCTESTNET]: 'testnet.',
@@ -38,6 +46,23 @@ const EXPLORER_NAMES: { [chainId in ChainId]: string } = {
 export const getExplorerName = (chainId: ChainId) => {
   const name = EXPLORER_NAMES[chainId]
   return name
+}
+
+export function getEtherscanLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
+  const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[56]}bscscan.com`
+
+  switch (type) {
+    case 'transaction': {
+      return `${prefix}/tx/${data}`
+    }
+    case 'token': {
+      return `${prefix}/token/${data}`
+    }
+    case 'address':
+    default: {
+      return `${prefix}/address/${data}`
+    }
+  }
 }
 
 export function getExplorerLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
@@ -72,6 +97,13 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))
 }
 
+// add 30% to default gas price
+export async function calculateGasPrice(provider: Provider): Promise<BigNumber> {
+  const defaultGasPrice = await provider.getGasPrice()
+
+  return defaultGasPrice.mul(BigNumber.from(10000).add(BigNumber.from(3000))).div(BigNumber.from(10000))
+}
+
 // converts a basis points value to a sdk percent
 export function basisPointsToPercent(num: number): Percent {
   return new Percent(JSBI.BigInt(Math.floor(num)), JSBI.BigInt(10000))
@@ -104,4 +136,24 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   }
 
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
+}
+
+// account is optional
+export function getRouterContract(chainId: ChainId, library: Web3Provider, account?: string): Contract {
+  return getContract(chainId && ROUTER_ADDRESS[chainId], ROUTER_ABI, library, account)
+}
+
+export function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+}
+
+export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
+  if (currency === ETHER) return true
+  return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
+}
+
+export async function getAccountTotalBalance(account, library): Promise<number> {
+  const contract = getContract(NFT_VESTING, AliumVestingAbi, library, account)
+  const { 0: totalBalanceRaw } = await contract.getTotalBalanceOf(account)
+  return Number(totalBalanceRaw.toString())
 }

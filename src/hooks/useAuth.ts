@@ -11,14 +11,14 @@ import {
 } from '@web3-react/walletconnect-connector'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { setConnectionError } from 'state/profile'
+import { setConnectionError } from 'state/application/actions'
+import { useToast } from 'state/hooks'
 import { setupNetwork } from '../utils/wallet'
-// import useToast from 'state/hooks'
 import { getConnectorsByName } from '../utils/web3React'
 
 const useAuth = () => {
   const { activate, deactivate } = useWeb3React()
-  // const { toastError } = useToast()
+  const { toastError } = useToast()
   const dispatch = useDispatch()
 
   const login = useCallback(
@@ -26,12 +26,12 @@ const useAuth = () => {
       try {
         const { chainId, connector } = getConnectorsByName(connectorID)
         if (connector) {
-          activate(connector, async (error: Error) => {
+          await activate(connector, async (error: Error) => {
             if (error instanceof UnsupportedChainIdError) {
               const hasSetup = await setupNetwork(chainId)
               if (hasSetup) {
                 try {
-                  activate(connector, (err) => console.error('err :>> ', err))
+                  await activate(connector, (err) => console.error('err :>> ', err))
                 } catch (err) {
                   console.error('err :>> ', err)
                 }
@@ -39,7 +39,7 @@ const useAuth = () => {
             } else {
               removeConnectorId()
               if (error instanceof NoEthereumProviderError || error instanceof NoBscProviderError) {
-                // toastError('Provider Error', 'No provider was found')
+                toastError('Provider Error', 'No provider was found')
               } else if (
                 error instanceof UserRejectedRequestErrorInjected ||
                 error instanceof UserRejectedRequestErrorWalletConnect
@@ -48,7 +48,7 @@ const useAuth = () => {
                   const walletConnector = connector as WalletConnectConnector
                   walletConnector.walletConnectProvider = null
                 }
-                // toastError('Authorization Error', 'Please authorize to access your account')
+                toastError('Authorization Error', 'Please authorize to access your account')
               } else {
                 dispatch(setConnectionError({ error }))
                 // toastError(error.name, error.message)
@@ -56,13 +56,13 @@ const useAuth = () => {
             }
           })
         } else {
-          // toastError("Can't find connector", 'The connector config is wrong')
+          toastError("Can't find connector", 'The connector config is wrong')
         }
       } catch (error) {
         dispatch(setConnectionError({ error }))
       }
     },
-    [activate],
+    [activate, toastError, dispatch],
   )
 
   return { login, logout: deactivate }
