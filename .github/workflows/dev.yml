@@ -50,7 +50,7 @@ jobs:
           name: build
       - run: cp -r ./ ~/$GITHUB_REPOSITORY
 
-  deploy_merge:
+  deploy_combined:
     needs: build_dev
     if: github.ref == 'refs/heads/combined'
     runs-on: [self-hosted, stage]
