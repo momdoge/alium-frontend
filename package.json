@@ -1,5 +1,5 @@
 {
-  "name": "alium-frontend",
+  "name": "@alium-finance/alium-frontend",
   "private": true,
   "description": "Alium Finance Frontend",
   "homepage": ".",
