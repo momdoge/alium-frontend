@@ -470,7 +470,7 @@ const HomeNew = () => {
             <StartingSoon>15.06.2021</StartingSoon>
           </MotionLeftColumn> */}
           <MotionLeftColumn xInitial={-60} xDuration={1}>
-            <H1>Alium Art NFT Marketplace is here!</H1>
+            <H1>Easy and Decentralized Access to Crypto!</H1>
           </MotionLeftColumn>
           <MotionLeftColumn xInitial={-40} xDuration={0.8}>
             <H2>Join in to get some exclusive drops!</H2>
