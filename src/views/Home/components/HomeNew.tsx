@@ -495,7 +495,7 @@ const HomeNew = () => {
 
               <ActionButton onClick={handleSubmitEmail}>{isLoading ? <StyledLoader /> : 'Send'}</ActionButton>
             </EmailContainer> */}
-            <a href="https://alium.art/" target="_blank">
+            <a href="https://exchange.momdoge.finance" target="_blank">
               <ActionButton>Join In</ActionButton>
             </a>
           </MotionLeftColumn>
