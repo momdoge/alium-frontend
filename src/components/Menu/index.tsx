@@ -43,7 +43,7 @@ const Menu: FC<props> = ({ loginBlockVisible = true, ...props }) => {
       items: [
         { label: 'Audits', href: `https://${getMainDomain()}/audits` },
         { label: t('mainMenu.github'), href: externalLinks.github },
-        { label: 'Docs', href: 'https://aliumswap.gitbook.io/alium-finance/' },
+        { label: 'Docs', href: 'https://medium.com/@MomDogeFinance' },
         { label: t('mainMenu.blog'), href: externalLinks.medium },
       ],
     },
