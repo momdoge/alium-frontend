@@ -36,24 +36,24 @@ const CakeStats = () => {
         <Text
           style={{ fontSize: '18px', lineHeight: '24px', letterSpacing: '0.3px', color: '#0B1359', fontWeight: 'bold' }}
         >
-          {TranslateString(534, 'ALM Stats')}
+          {TranslateString(534, 'MOMDOGE Stats')}
         </Text>
         <Divider />
         <Row>
           <Text fontSize="16px" color="#8990A5" style={{ fontWeight: 'normal' }}>
-            {TranslateString(536, 'Total ALM Supply')}
+            {TranslateString(536, 'Total MOMDOGE Supply')}
           </Text>
           <CardValue fontSize="16px" color="#0B1359" bold value={totalSupply} />
         </Row>
         <Row>
           <Text fontSize="16px" color="#8990A5">
-            {TranslateString(538, 'Total ALM Burned')}
+            {TranslateString(538, 'Total MOMDOGE Burned')}
           </Text>
           <CardValue fontSize="16px" color="#0B1359" value={getBalanceNumber(burnedBalance)} />
         </Row>
         <Row>
           <Text fontSize="16px" color="#8990A5">
-            {TranslateString(540, 'New ALM/block')}
+            {TranslateString(540, 'New MOMDOGE/block')}
           </Text>
           <CardValue fontSize="16px" color="#0B1359" value={almPerBlock} />
         </Row>
